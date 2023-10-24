@@ -132,6 +132,9 @@ const CreateCourseForm = (props: Props) => {
             </div>
             <Separator className="flex-[1]" />
           </div>
+          <Button className="w-full mt-6" size="lg">
+            Let's Go
+          </Button>
             </form>
         </Form>
     </div>
