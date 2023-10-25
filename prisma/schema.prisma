@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "cockroachdb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -16,12 +16,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.String
-  access_token      String? @db.String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.String
+  id_token          String? @db.Text
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -51,51 +51,51 @@ model User {
   sessions Session[]
 }
 
-// // course contains many units
-// model Course {
-//   id    String @id @default(cuid())
-//   name  String
-//   image String
-//   units Unit[]
-// }
+// course contains many units
+model Course {
+  id    String @id @default(cuid())
+  name  String
+  image String
+  units Unit[]
+}
 
-// // unit contains many chapters
-// model Unit {
-//   id       String @id @default(cuid())
-//   courseId String
+// unit contains many chapters
+model Unit {
+  id       String @id @default(cuid())
+  courseId String
 
-//   name     String
-//   course   Course    @relation(fields: [courseId], references: [id])
-//   chapters Chapter[]
+  name     String
+  course   Course    @relation(fields: [courseId], references: [id])
+  chapters Chapter[]
 
-//   @@index([courseId], name: "courseId")
-// }
+  @@index([courseId], name: "courseId")
+}
 
-// model Chapter {
-//   id     String @id @default(cuid())
-//   unitId String
+model Chapter {
+  id     String @id @default(cuid())
+  unitId String
 
-//   name               String
-//   youtubeSearchQuery String
-//   videoId            String?
-//   summary            String?    @db.VarChar(3000)
-//   unit               Unit       @relation(fields: [unitId], references: [id])
-//   questions          Question[]
+  name               String
+  youtubeSearchQuery String
+  videoId            String?
+  summary            String?    @db.VarChar(3000)
+  unit               Unit       @relation(fields: [unitId], references: [id])
+  questions          Question[]
 
-//   @@index([unitId], name: "unitId")
-// }
+  @@index([unitId], name: "unitId")
+}
 
-// model Question {
-//   id        String @id @default(cuid())
-//   chapterId String
+model Question {
+  id        String @id @default(cuid())
+  chapterId String
 
-//   question String  @db.VarChar(3000)
-//   answer   String  @db.VarChar(3000)
-//   options  String  @db.VarChar(3000)
-//   chapter  Chapter @relation(fields: [chapterId], references: [id])
+  question String  @db.VarChar(3000)
+  answer   String  @db.VarChar(3000)
+  options  String  @db.VarChar(3000)
+  chapter  Chapter @relation(fields: [chapterId], references: [id])
 
-//   @@index([chapterId], name: "chapterId")
-// }
+  @@index([chapterId], name: "chapterId")
+}
 
 // model UserSubscription {
 //   id                     String    @id @default(cuid())
