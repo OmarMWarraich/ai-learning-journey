@@ -4,8 +4,9 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { prisma } from "@/lib/db";
-import { getTranscript, searchYoutube } from "@/lib/youtube";
+import { getQuestionsFromTranscript, getTranscript, searchYoutube } from "@/lib/youtube";
 import { strict_output } from "@/lib/gpt";
+import { get } from "http";
 
 const bodyParser = z.object({
     chapterId: z.string(),
@@ -41,7 +42,36 @@ export async function POST(req: Request, res: Response) {
               transcript,
             { summary: "summary of the transcript" }
           );
-        return NextResponse.json({ videoId, transcript, summary })
+        
+        const questions = await getQuestionsFromTranscript(transcript, chapter.name);
+
+        await prisma.question.createMany({
+            data: questions.map((question) => {
+              let options = [
+                question.answer,
+                question.option1,
+                question.option2,
+                question.option3,
+              ];
+              options = options.sort(() => Math.random() - 0.5);
+              return {
+                question: question.question,
+                answer: question.answer,
+                options: JSON.stringify(options),
+                chapterId: chapterId,
+              };
+            }),
+          });
+
+          await prisma.chapter.update({
+            where: { id: chapterId },
+            data: {
+              videoId: videoId,
+              summary: summary,
+            },
+          });
+
+        return NextResponse.json({ success: true })
     } catch (error) {
         if (error instanceof z.ZodError) {
             return NextResponse.json({

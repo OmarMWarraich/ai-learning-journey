@@ -17,14 +17,25 @@ type Props = {
 }
 
 const ConfirmChapters = ({course}: Props) => {
+    const [loading, setLoading] = React.useState(false);
     const chapterRefs: Record<string, React.RefObject<ChapterCardHandler>> = {};
     course.units.forEach((unit) => {
         unit.chapters.forEach((chapter) => {
             chapterRefs[chapter.id] = React.useRef(null);
         })
     })
-    console.log(chapterRefs);
-  return (
+
+    const [completedChapters, setCompletedChapters] = React.useState<Set<String>>(
+        new Set()
+      );
+
+    const totalChaptersCount = React.useMemo(() => {
+    return course.units.reduce((acc, unit) => {
+        return acc + unit.chapters.length;
+    }, 0);
+    }, [course.units]);
+
+    return (
     <div className="w-full mt-4">
         {course.units.map((unit, unitIndex) => {
             return (
@@ -38,7 +49,14 @@ const ConfirmChapters = ({course}: Props) => {
                     <div className="mt-3">
                         {unit.chapters.map((chapter, chapterIndex) => {
                             return (
-                                <ChapterCard ref={chapterRefs[chapter.id]} key={chapter.id} chapter={chapter} chapterIndex={chapterIndex} />
+                                <ChapterCard
+                                    ref={chapterRefs[chapter.id]}
+                                    key={chapter.id}
+                                    chapter={chapter}
+                                    chapterIndex={chapterIndex} 
+                                    completedChapters={completedChapters}
+                                    setCompletedChapters={setCompletedChapters}
+                                />
                             )
                         })}
                     </div>
@@ -54,10 +72,23 @@ const ConfirmChapters = ({course}: Props) => {
                     <ChevronLeft className="w-4 h-4 mr-2" strokeWidth={4} />
                     Back
                 </Link>
+                {totalChaptersCount === completedChapters.size ? (
+                    <Link
+                     href={`/course/${course.id}/0/0`}
+                     className={buttonVariants({
+                        className: "ml-4 font-semibold",
+                        })
+                     }
+                    >
+                        Save & Continue
+                    </Link>
+                ): (
                 <Button 
                     className="ml-4 font-semibold" 
-                    type="button" 
+                    type="button"
+                    disabled={loading}
                     onClick={() => {
+                        setLoading(true)
                         Object.values(chapterRefs).forEach((ref) => {
                             ref.current?.triggerLoad();
                         })
@@ -66,6 +97,7 @@ const ConfirmChapters = ({course}: Props) => {
                     Generate
                     <ChevronRight className="w-4 h-4 ml-2" strokeWidth={4} />
                 </Button>
+                )}
             </div>
             <Separator className="flex-[1]" />
         </div>
