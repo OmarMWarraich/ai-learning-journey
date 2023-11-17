@@ -70,7 +70,7 @@ const CreateCourseForm = (props: Props) => {
     })
   }
 
-  console.log(form.watch())
+  /* console.log(form.watch()) */
 
   return (
     <div className="w-full">
