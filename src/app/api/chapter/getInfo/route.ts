@@ -6,7 +6,6 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { getQuestionsFromTranscript, getTranscript, searchYoutube } from "@/lib/youtube";
 import { strict_output } from "@/lib/gpt";
-import { get } from "http";
 
 const bodyParser = z.object({
     chapterId: z.string(),
@@ -38,7 +37,7 @@ export async function POST(req: Request, res: Response) {
 
         const { summary }: { summary: string } = await strict_output(
             "You are an AI capable of summarising a youtube transcript",
-            "summarise in 250 words or less and do not talk of the sponsors or anything unrelated to the main topic, also do not introduce what the summary is about.\n" +
+            "summarise in 1000 words or less and do not talk of the sponsors or anything unrelated to the main topic, also do not introduce what the summary is about.\n" +
               transcript,
             { summary: "summary of the transcript" }
           );
