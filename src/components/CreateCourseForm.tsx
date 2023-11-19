@@ -9,18 +9,19 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from './ui/input'
 import { Separator } from './ui/separator'
 import { Button } from './ui/button'
-import { Plus, Trash } from 'lucide-react'
+import { Loader, Plus, Trash } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { useToast } from './ui/use-toast'
 import { useRouter } from 'next/navigation'
+import SubscriptionAction from './SubscriptionAction'
 
-type Props = {}
+type Props = {isPro: boolean}
 
 type Input = z.infer<typeof createChaptersSchema>
 
-const CreateCourseForm = (props: Props) => {
+const CreateCourseForm = ({isPro}: Props) => {
   const router = useRouter()
   const { toast } = useToast()
   const {mutate: createChapters, isLoading} = useMutation({
@@ -174,10 +175,21 @@ const CreateCourseForm = (props: Props) => {
             <Separator className="flex-[1]" />
           </div>
           <Button className="w-full mt-6" size="lg" disabled={isLoading}>
-            Let's Go
+            {isLoading ? (
+              <div className="flex items-center">
+                <span className="mr-2">Creating.</span>
+                <span className="mr-2"><Loader className="w-4 h-4" /></span>
+                <div className="spinner-border text-light" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
+              </div>
+            ) : (
+              "Let's Go"
+            )}
           </Button>
             </form>
         </Form>
+        {!isPro && <SubscriptionAction /> }
     </div>
   )
 }
