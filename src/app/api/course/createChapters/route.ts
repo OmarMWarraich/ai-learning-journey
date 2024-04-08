@@ -1,5 +1,3 @@
-// /api/course/createChapters
-
 import { NextResponse } from "next/server";
 import { createChaptersSchema } from "@/validators/course";
 import { ZodError } from "zod";
@@ -11,7 +9,6 @@ import { getAuthSession } from "@/lib/auth";
 
 export async function POST(req: Request, res: Response) {
   try {
-    
     const session = await getAuthSession();
 
     if (!session?.user) {
@@ -20,7 +17,7 @@ export async function POST(req: Request, res: Response) {
 
     const isPro = await checkSubscription();
 
-    if(session.user.credits <= 0 && !isPro) {
+    if (session.user.credits <= 0 && !isPro) {
       return new NextResponse("not enough credits", { status: 402 });
     }
 
@@ -94,7 +91,7 @@ export async function POST(req: Request, res: Response) {
         },
       },
     });
-    
+
     return NextResponse.json({ course_id: course.id });
   } catch (error) {
     if (error instanceof ZodError) {

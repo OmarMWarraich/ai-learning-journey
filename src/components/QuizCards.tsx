@@ -1,11 +1,12 @@
 "use client";
+import React from "react";
+import { ChevronRight } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 import { Chapter, Question } from "@prisma/client";
-import React from "react";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
-import { ChevronRight } from "lucide-react";
 
 type Props = {
   chapter: Chapter & {
