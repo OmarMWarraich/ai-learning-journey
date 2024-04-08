@@ -26,7 +26,7 @@ jobs:
           git reset --hard &&
           git checkout main &&
           git pull origin main &&
-          docker-compose down &&
-          docker-compose rm -fsv &&
-          docker-compose up --build -d
+          sudo docker-compose down &&
+          sudo docker-compose rm -fsv &&
+          sudo docker-compose up --build -d
           '
