@@ -5,7 +5,7 @@ const Home = async () => {
   const session = await getAuthSession();
   return (
     <div className="flex flex-col justify-center items-center h-screen">
-      <h1 className="text-4xl font-bold">Course Generator</h1>
+      <h1 className="text-4xl font-bold">AI Course Generator</h1>
       <p className="text-lg text-gray-600">with OpenAI</p>
 
       {session ? (
