@@ -27,7 +27,7 @@
     "framer-motion": "^10.16.4",
     "lucide-react": "^0.287.0",
     "next": "14.2.12",
-    "next-auth": "^4.23.2",
+    "next-auth": "^4.24.10",
     "next-themes": "^0.2.1",
     "openai": "^3.3.0",
     "react": "^18",
